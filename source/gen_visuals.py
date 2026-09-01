@@ -9,7 +9,14 @@ a poster. They are 3:2 and drop straight out when the real architect renders arr
 """
 import os, math, random
 
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
+_ICI = os.path.dirname(os.path.abspath(__file__))
+# Dans mon dossier de travail les scripts sont a cote des pages. Dans le paquet
+# livre ils sont ranges dans source/, un cran plus bas — et sans ca, « cd source
+# && python3 gen_visuals.py » ecrivait les SVG dans source/assets/ au lieu de
+# ../assets/. Les pages livrees continuaient d'afficher les anciens fichiers et
+# rien ne le signalait. On remonte donc d'un cran si on est dans source/.
+RACINE = os.path.dirname(_ICI) if os.path.basename(_ICI) == "source" else _ICI
+OUT = os.path.join(RACINE, "assets")
 os.makedirs(OUT, exist_ok=True)
 
 W, H = 1500, 1000
@@ -190,6 +197,15 @@ SCENES = [
     ("cn-pekin",        "sable",        "land", 191, "Residence a Pekin"),
     ("cn-shenzhen",     "mediterranee", "sea",  211, "Residence a Shenzhen"),
     ("cn-chengdu",      "olive",        "land", 221, "Residence a Chengdu"),
+    # Egypte. Meme regle : graines fixes.
+    # Palette "sable" pour le hero : c'est la seule des cinq pages ou le desert
+    # est le fond reel du pays, et ca la distingue au premier coup d'oeil de la
+    # page Chine qui ouvre sur une nuit et des trois autres sur un ciel clair.
+    ("hero-eg",         "sable",        "land", 231, "Residences Amarimmo en Egypte"),
+    ("eg-caire",        "couchant",     "land", 241, "Immeuble residentiel au Caire"),
+    ("eg-alexandrie",   "mediterranee", "sea",  251, "Residence en front de mer a Alexandrie"),
+    ("eg-hurghada",     "mediterranee", "sea",  261, "Residence balneaire a Hurghada"),
+    ("eg-alamein",      "couchant",     "sea",  271, "Residence sur la cote a El-Alamein"),
 ]
 
 if __name__ == "__main__":

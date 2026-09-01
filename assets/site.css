@@ -104,7 +104,20 @@ section{padding:clamp(64px,8vw,116px) 0;scroll-margin-top:88px}  /* sticky heade
 .hero h1{color:#fff;max-width:17ch}
 .hero .sub{margin-top:22px;max-width:58ch;color:rgba(255,255,255,.88);font-size:1.1rem}
 .hero .cta{display:flex;gap:13px;margin-top:34px;flex-wrap:wrap}
-.hero .eyebrow{color:#D8B57C}
+/* Le sur-titre dore etait pose sur des ciels clairs : mesure faite en
+   echantillonnant les pixels DERRIERE le libelle sur les cinq pages, le
+   contraste tombait a 1,01:1 sur l'Egypte, 1,02:1 sur l'Espagne, 1,10 sur la
+   Turquie, 1,13 sur l'Algerie. Autrement dit il etait illisible sur quatre
+   pages sur cinq, et depuis le debut — seule la page Chine, au ciel de nuit,
+   passait. Trouve en regardant une capture, pas en relisant la feuille.
+   Premiere tentative : une ombre portee. Re-mesure : 1,15:1 sur l'Egypte, donc
+   ratee. Une ombre n'assombrit qu'un halo de deux pixels autour des lettres,
+   elle ne change pas ce qu'il y a ENTRE elles — et c'est la que l'oeil cherche
+   le contraste. Deuxieme tentative, celle qui tient : un fond sombre plein
+   derriere le libelle. Le fond devient alors une couleur connue au lieu d'un
+   ciel qui change d'une page a l'autre. */
+.hero .eyebrow{display:inline-block; color:#F3DCBB;
+  background:rgba(11,14,16,.80); padding:7px 12px; border-radius:2px}
 
 .strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--sand)}
 .strip .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
@@ -210,7 +223,16 @@ section{padding:clamp(64px,8vw,116px) 0;scroll-margin-top:88px}  /* sticky heade
    marche. Le contact a rejoint la colonne de marque — six colonnes de
    36 px d'ecart sur 1200 px donnaient 160 px chacune, trop etroit pour
    « Questions frequentes » sans cesure. */
-.ft-main .cols{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr 1fr;gap:32px;padding-bottom:52px}
+/* Cinq marches : la colonne de marque + cinq colonnes de liens sur une seule
+   ligne redonnaient 160 px par colonne — exactement la largeur qui coupait
+   « Questions frequentes » en deux quand il n'y avait que quatre marches.
+   La marque passe donc sur sa propre ligne, et les colonnes de marche se
+   partagent toute la largeur : 214 px chacune a 1200 px. Ca tient aussi si un
+   sixieme marche arrive. */
+.ft-main .cols{display:block;padding-bottom:52px}
+.ft-main .ft-brand{padding-bottom:38px;margin-bottom:38px;
+  border-bottom:1px solid rgba(255,255,255,.1)}
+.ft-main .ft-links{display:grid;grid-template-columns:repeat(5,1fr);gap:32px}
 .ft-main h4{font:600 11.4px/1 var(--sans);letter-spacing:.17em;text-transform:uppercase;
   color:#8C8377;margin-bottom:17px}
 .ft-main ul{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:.94rem}
@@ -237,7 +259,7 @@ section{padding:clamp(64px,8vw,116px) 0;scroll-margin-top:88px}  /* sticky heade
   .g3{grid-template-columns:repeat(2,1fr)}
   .split{grid-template-columns:1fr}
   .strip .wrap{grid-template-columns:repeat(2,1fr)}
-  .ft-main .cols{grid-template-columns:1fr 1fr}
+  .ft-main .ft-links{grid-template-columns:repeat(3,1fr);row-gap:34px}
 }
 @media(max-width:760px){
   /* the market switch was being squeezed against the burger and losing its second label */
@@ -255,7 +277,7 @@ section{padding:clamp(64px,8vw,116px) 0;scroll-margin-top:88px}  /* sticky heade
   .steps li{grid-template-columns:52px 1fr;row-gap:8px}
   .steps li p{grid-column:2}
   .form{grid-template-columns:1fr}
-  .ft-main .cols{grid-template-columns:1fr}
+  .ft-main .ft-links{grid-template-columns:1fr;row-gap:26px}
   .hero{min-height:auto}
   .hero .wrap{padding-top:86px;padding-bottom:48px}
 }
@@ -328,3 +350,20 @@ section:not(.dark) .box p{font-size:.94rem}
    doit jamais defiler lateralement : mesure avant correction, 405 px de
    contenu pour 390 px d'ecran, sur la page Espagne comme sur la Turquie. */
 .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+
+/* ---- Regime d'acquisition, porte par chaque ville de la page Egypte -------
+   L'Egypte est le seul des cinq marches ou la regle n'est pas nationale. Deux
+   des douze villes — et ce sont deux des plus recherchees par un acheteur
+   etranger — n'ouvrent pas la pleine propriete. Renvoyer ca a une note de bas
+   de page reviendrait a laisser un lecteur parcourir la grille et en conclure
+   un marche homogene qui n'existe pas. La mention est donc DANS la carte,
+   au-dessus de la description, et les deux valeurs ne se ressemblent pas. */
+.reg{
+  display:inline-block; font:600 11.2px/1 var(--sans);
+  letter-spacing:.09em; text-transform:uppercase;
+  padding:6px 9px; border-radius:2px; border:1px solid; margin-bottom:12px;
+}
+.reg-pp{background:#EDF3EF; color:#2F6349; border-color:#CBDFD3}
+.reg-sn{background:#FBEFE6; color:#8A4A21; border-color:#EBD3BE}
+.dark .reg-pp{background:rgba(63,125,92,.16); color:#9ED2B4; border-color:rgba(158,210,180,.3)}
+.dark .reg-sn{background:rgba(214,132,74,.16); color:#E9B48A; border-color:rgba(233,180,138,.3)}

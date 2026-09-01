@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Amarimmo — builds index.html (Algérie), espagne.html, turquie.html and chine.html.
+Amarimmo — builds index.html (Algérie), espagne.html, turquie.html, chine.html and egypte.html.
 
-Four pages that share a header, a footer and a stylesheet, so the shell is written once here
+Five pages that share a header, a footer and a stylesheet, so the shell is written once here
 rather than copy-pasted into each file and left to drift apart.
 
 Content rules I held to, same as every other build for this client:
@@ -18,8 +18,18 @@ import os, html
 from turquie_contenu import VILLES, ETAPES, BAREME, FAQ as TR_FAQ
 from chine_contenu import (VILLES as CN_VILLES, ETAPES as CN_ETAPES,
                            BAREME as CN_BAREME, FAQ as CN_FAQ)
+# L'Égypte est le seul des cinq marchés dont le régime n'est pas national :
+# ses villes portent donc un quatrième champ, le régime d'acquisition.
+from egypte_contenu import (VILLES as EG_VILLES, ETAPES as EG_ETAPES,
+                            BAREME as EG_BAREME, FAQ as EG_FAQ)
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+_ICI = os.path.dirname(os.path.abspath(__file__))
+# Meme raison que dans gen_visuals.py : dans le paquet livre, les scripts sont
+# dans source/ et les pages sont un cran au-dessus. Sans ce reglage, relancer
+# build.py depuis le paquet ecrivait cinq pages HTML DANS source/, laissant les
+# vraies pages inchangees — une regeneration qui a l'air d'avoir marche et qui
+# n'a rien mis a jour.
+HERE = os.path.dirname(_ICI) if os.path.basename(_ICI) == "source" else _ICI
 
 MARK = ('<svg class="mk" viewBox="0 0 32 32" fill="none" aria-hidden="true">'
         '<path d="M3 29V13.6L16 3l13 10.6V29" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/>'
@@ -57,8 +67,9 @@ def nav(page):
     es = ' aria-current="page"' if page == "es" else ""
     tr = ' aria-current="page"' if page == "tr" else ""
     cn = ' aria-current="page"' if page == "cn" else ""
-    accueil = {"dz": "index.html", "es": "espagne.html",
-               "tr": "turquie.html", "cn": "chine.html"}[page]
+    eg = ' aria-current="page"' if page == "eg" else ""
+    accueil = {"dz": "index.html", "es": "espagne.html", "tr": "turquie.html",
+               "cn": "chine.html", "eg": "egypte.html"}[page]
     return f'''<header class="hdr">
   <div class="wrap">
     <a class="brand" href="{accueil}">
@@ -70,6 +81,7 @@ def nav(page):
       <a href="espagne.html"{es}>Espagne</a>
       <a href="turquie.html"{tr}>Turquie</a>
       <a href="chine.html"{cn}>Chine</a>
+      <a href="egypte.html"{eg}>Égypte</a>
     </div>
     <button class="burger" aria-label="Menu" aria-expanded="false" id="burger"><span></span><span></span><span></span></button>
   </div>
@@ -85,14 +97,15 @@ DEMO = '''<div class="demo" id="demo">
 FOOT = '''<footer class="ft-main">
   <div class="wrap">
     <div class="cols">
-      <div>
+      <div class="ft-brand">
         <div class="brand">''' + MARK + '''<span class="nm" style="color:#fff">Amar<em style="color:#A9814B;font-style:normal">immo</em></span></div>
-        <p class="bl">Promotion et commercialisation de résidences en Algérie et en Espagne, accompagnement à l'acquisition en Turquie et en Chine.</p>
+        <p class="bl">Promotion et commercialisation de résidences en Algérie et en Espagne, accompagnement à l'acquisition en Turquie, en Chine et en Égypte.</p>
         <ul style="margin-top:20px">
           <li class="muted" style="color:#8C8377">Coordonnées à compléter</li>
           <li><a href="#contact">Formulaire de contact</a></li>
         </ul>
       </div>
+      <div class="ft-links">
       <div>
         <h4>Algérie</h4>
         <ul>
@@ -128,6 +141,16 @@ FOOT = '''<footer class="ft-main">
           <li><a href="chine.html#sol">Le droit d'usage du sol</a></li>
           <li><a href="chine.html#faq">Questions fréquentes</a></li>
         </ul>
+      </div>
+      <div>
+        <h4>Égypte</h4>
+        <ul>
+          <li><a href="egypte.html#villes">Les douze marchés</a></li>
+          <li><a href="egypte.html#titre">Contrat et titre</a></li>
+          <li><a href="egypte.html#processus">Acheter en Égypte</a></li>
+          <li><a href="egypte.html#faq">Questions fréquentes</a></li>
+        </ul>
+      </div>
       </div>
     </div>
   </div>
@@ -204,7 +227,7 @@ def page(title, desc, body, which):
 <meta property="og:title" content="{html.escape(title)}">
 <meta property="og:description" content="{html.escape(desc)}">
 <meta property="og:type" content="website">
-<link rel="stylesheet" href="assets/site.css?v=3">
+<link rel="stylesheet" href="assets/site.css?v=5">
 </head>
 <body>
 {DEMO}
@@ -916,6 +939,201 @@ cn_body = f'''
 {contact("Chine — douze marchés", [n for n, _, _ in CN_VILLES] + ["Autre ville"])}
 '''
 
+eg_projects = "".join([
+    project("eg-caire", "Exemple de fiche", "Résidence Tagamoa", "Nouveau Caire — Le Caire",
+            ["2 et 3 chambres", "Résidence fermée", "Livraison sur plan"], "Sur plan"),
+    project("eg-alexandrie", "Exemple de fiche", "Résidence Corniche", "Alexandrie — Front de mer",
+            ["3 chambres", "Vue mer", "Ancien réhabilité"], "En commercialisation"),
+    project("eg-hurghada", "Exemple de fiche", "Résidence Sahl", "Hurghada — Mer Rouge",
+            ["Studios et 2 pièces", "Piscine", "Hors Sinaï — pleine propriété"], "Livré"),
+    project("eg-alamein", "Exemple de fiche", "Résidence Alamein", "El-Alamein — Côte nord",
+            ["2 et 3 chambres", "Front de mer", "Saisonnier"], "Sur plan"),
+])
+
+# Le quatrieme champ est le REGIME. C'est la difference de structure avec les
+# quatre autres pages : une liste de villes sans cette mention laisserait croire
+# a une regle nationale unique, qui n'existe pas en Egypte. Deux des douze
+# villes — et ce sont deux des plus recherchees — n'ouvrent pas la pleine
+# propriete a un etranger.
+eg_villes = "".join(
+    f'<div class="box"><h3>{html.escape(n)}</h3>'
+    f'<p class="muted" style="font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">{html.escape(r)}</p>'
+    f'<p class="reg {"reg-pp" if g == "pp" else "reg-sn"}">'
+    f'{"Pleine propriété accessible" if g == "pp" else "Sinaï — pas de pleine propriété"}</p>'
+    f'<p>{html.escape(d)}</p></div>'
+    for n, r, g, d in EG_VILLES)
+
+eg_bareme = "".join(
+    f'<tr><td>{html.escape(l)}</td>'
+    f'<td><span class="tbd{"" if k == "verif" else " tbd-x"}">'
+    f'{"à vérifier" if k == "verif" else "non fixé"}</span></td>'
+    f'<td>{html.escape(q)}<br><span class="muted">Source : {html.escape(src)}</span></td></tr>'
+    for l, k, q, src in EG_BAREME)
+
+eg_body = f'''
+<div class="hero">
+  <img src="assets/hero-eg.svg" alt="Illustration de résidences modernes en Égypte">
+  <div class="wrap">
+    <div class="eyebrow">Acquisition — Égypte</div>
+    <h1>Acheter en Égypte, en sachant ce que vaut le papier que l'on signe.</h1>
+    <p class="sub">Un étranger peut devenir pleinement propriétaire sur la plus grande partie du pays. Mais deux choses distinguent ce marché des quatre autres présentés ici : un contrat de vente n'est pas un titre tant qu'il n'est pas inscrit au registre, et la règle n'est pas la même partout — le Sinaï relève d'un régime distinct. Cette page part de ces deux points.</p>
+    <div class="cta">
+      <a class="btn btn-p" href="#titre">Contrat, titre, et la différence {ARROW}</a>
+      <a class="btn btn-g" href="#villes">Les douze marchés</a>
+    </div>
+  </div>
+</div>
+
+<div class="strip">
+  <div class="wrap">
+    <div><div class="k">Ce qui s'acquiert</div><div class="v">La pleine propriété — hors Sinaï</div></div>
+    <div><div class="k">Titre</div><div class="v">Acte inscrit au registre foncier</div></div>
+    <div><div class="k">Achat par un étranger</div><div class="v">Ouvert, dans les limites de la loi</div></div>
+    <div><div class="k">Séjour ou nationalité</div><div class="v">Des voies existent, sous conditions</div></div>
+  </div>
+</div>
+
+<section id="titre">
+  <div class="wrap">
+    <div class="head">
+      <div class="eyebrow">La différence de fond</div>
+      <h2>Deux choses à comprendre avant de regarder un seul bien.</h2>
+      <p class="lede" style="margin-top:18px">Elles ne sont pas des réserves de bas de page. La première décide si vous êtes propriétaire ou créancier. La seconde décide si l'opération que vous envisagez existe à l'endroit que vous visez.</p>
+    </div>
+    <div class="grid g2">
+      <div class="fc" style="border-left:4px solid var(--gold)">
+        {icon(ICONS["doc"])}
+        <h3>Un contrat n'est pas un titre</h3>
+        <p>Un contrat de vente non enregistré vous donne une créance <b>contre le vendeur</b>. L'inscription au service de la publicité foncière vous donne un droit <b>opposable à tous</b>. La différence n'apparaît que le jour où elle compte : un bien vendu deux fois, un créancier du vendeur, des héritiers qui se manifestent.</p>
+        <p>Une part importante des biens en circulation en Égypte n'est pas enregistrée. Ce n'est donc pas un signal que le vendeur est douteux — c'est la situation ordinaire, et elle se traite. Ce qui n'est pas acceptable, c'est d'acheter sans savoir dans laquelle des deux situations on se trouve.</p>
+        <p>Le recours usuel quand l'inscription est bloquée est l'action en validité et opposabilité, qui fait constater la vente par un juge. Elle renforce nettement votre position. <b>Elle ne remplace pas l'inscription</b>, et les deux sont trop souvent présentés comme équivalents.</p>
+      </div>
+      <div class="fc" style="border-left:4px solid var(--gold)">
+        {icon(ICONS["scale"])}
+        <h3>La règle n'est pas la même partout dans le pays</h3>
+        <p>Sur les quatre autres marchés de ce site, le régime d'acquisition est national : ce qui vaut dans une ville vaut dans la suivante. En Égypte, non. <b>Le Sinaï n'ouvre pas la pleine propriété à un acheteur étranger</b> : l'accès y passe par un droit d'usage à durée déterminée, avec une procédure d'autorisation propre.</p>
+        <p>Ce n'est pas une curiosité de géographie. Charm el-Cheikh et Dahab sont dans le Sinaï, et ce sont deux des premières destinations que cherche un acheteur étranger. Hurghada et El Gouna, sur la côte ouest de la mer Rouge, n'y sont pas.</p>
+        <p>C'est pour ça que le régime est écrit <b>sur chaque ville</b> de la grille ci-dessous, et pas renvoyé à une note. S'y ajoutent des zones frontalières et stratégiques soumises à approbation, dont le périmètre est fixé par décret et se vérifie pour la parcelle précise.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sand" id="villes">
+  <div class="wrap">
+    <div class="head">
+      <div class="eyebrow">Les marchés</div>
+      <h2>Douze villes, et deux régimes différents.</h2>
+      <p class="lede" style="margin-top:18px">Métropoles du Caire et de Gizeh, villes nouvelles vendues sur plan, littoral méditerranéen, mer Rouge. La mention portée sur chaque ville n'est pas décorative : elle dit si un étranger peut y devenir pleinement propriétaire.</p>
+    </div>
+    <div class="grid g3">{eg_villes}</div>
+    <p class="note">Tu as écrit « And egypt » sans liste de villes — comme pour la Chine, et contrairement à la Turquie où les douze venaient de ton document. Cette sélection est donc la mienne, et je le dis plutôt que de la présenter comme un choix évident. Envoie ta liste et je remplace, dans ton ordre.</p>
+  </div>
+</section>
+
+<section id="residences">
+  <div class="wrap">
+    <div class="head">
+      <div class="eyebrow">Nos programmes</div>
+      <h2>Du neuf sur plan, de l'ancien réhabilité, du balnéaire.</h2>
+      <p class="lede" style="margin-top:18px">Trois logiques différentes cohabitent sur ce marché et ne s'achètent pas de la même façon : la ville nouvelle vendue sur plan avec un échéancier long, l'ancien urbain où tout se joue sur le titre, et le littoral saisonnier.</p>
+    </div>
+    <div class="grid g4">{eg_projects}</div>
+    <p class="note">Fiches d'exemple. Tes programmes réels, avec photos, plans et prix, viendront les remplacer.</p>
+  </div>
+</section>
+
+<section class="sand" id="processus">
+  <div class="wrap">
+    <div class="head">
+      <div class="eyebrow">Le processus</div>
+      <h2>Acheter en Égypte quand on n'y réside pas.</h2>
+      <p class="lede" style="margin-top:18px">Les deux premières étapes ne sont pas des formalités administratives à régler plus tard. La première détermine la nature juridique de l'opération. La seconde, la façon de payer, conditionne des droits que l'on ne récupère pas après coup.</p>
+    </div>
+    {steps(EG_ETAPES)}
+  </div>
+</section>
+
+<section id="devises">
+  <div class="wrap">
+    <div class="split" style="align-items:center">
+      <div>
+        <div class="eyebrow">Le point que l'on découvre trop tard</div>
+        <h2>Ici, c'est l'entrée de l'argent qui se prépare, pas sa sortie.</h2>
+        <p class="lede" style="margin-top:18px">Sur la page Chine, la difficulté est de faire ressortir le produit de la vente. En Égypte, elle est en amont : il faut pouvoir prouver que les fonds sont entrés <b>depuis l'étranger, en devises, par le canal bancaire</b>. La banque égyptienne délivre une attestation de transfert, et ce document unique conditionne trois choses à la fois.</p>
+        <p class="lede" style="margin-top:14px">Il ouvre les voies de séjour et de nationalité liées à l'investissement. Il justifie l'origine des fonds le jour de la revente. Et il permet le rapatriement du produit de la vente. Payer en espèces ou par un circuit parallèle ne rend pas le dossier « moins complet » : cela ferme ces trois portes, et elles ne se rouvrent pas rétroactivement.</p>
+      </div>
+      <div>
+        <div class="fc" style="margin-bottom:18px">
+          {icon(ICONS["doc"])}
+          <h3>Ce qui se conserve dès le premier virement</h3>
+          <p>L'attestation de transfert délivrée par la banque égyptienne, en original ; le contrat en arabe ; l'acte inscrit au registre ou, à défaut, le jugement ; et l'ensemble des quittances d'impôts et de taxes liées à l'acquisition.</p>
+        </div>
+        <div class="fc">
+          {icon(ICONS["shield"])}
+          <h3>Le virement se fait au nom de l'acquéreur</h3>
+          <p>Pas au nom d'un proche, pas depuis le compte d'un tiers. Un transfert dont le donneur d'ordre n'est pas l'acheteur ne prouve pas ce qu'il doit prouver, et c'est une correction impossible à faire des années plus tard.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sand" id="couts">
+  <div class="wrap">
+    <div class="head">
+      <div class="eyebrow">Frais, taxes et conditions</div>
+      <h2>Les montants ne sont pas écrits ici, et c'est volontaire.</h2>
+      <p class="lede" style="margin-top:18px">Ce tableau nomme chaque poste et l'autorité qui en publie la valeur. Deux mentions différentes y figurent, et elles ne veulent pas dire la même chose.</p>
+    </div>
+    <div class="split" style="align-items:start">
+      <div class="tbl-wrap"><table class="tbl">
+        <tr><th>Poste</th><th>Valeur</th><th>Ce que c'est, et qui la publie</th></tr>
+        {eg_bareme}
+      </table></div>
+      <div>
+        <div class="fc" style="margin-bottom:18px">
+          {icon(ICONS["shield"])}
+          <h3>« À vérifier » et « non fixé » ne sont pas la même absence</h3>
+          <p><span class="tbd">à vérifier</span> — la valeur existe, l'autorité qui la publie est nommée en face, et personne ne l'a encore vérifiée à une date précise.</p>
+          <p><span class="tbd tbd-x">non fixé</span> — la valeur <b>n'existe pas</b>. Aucune autorité ne publie de barème de commission d'agence, et aucun texte n'encadre la révision d'un échéancier de promoteur. Marquer ces deux lignes « à vérifier » enverrait quelqu'un chercher pendant une semaine un chiffre que personne n'a jamais écrit — au lieu de relire sa clause, qui est le seul endroit où la réponse se trouve.</p>
+        </div>
+        <div class="fc">
+          {icon(ICONS["chart"])}
+          <h3>Pourquoi les seuils de séjour et de nationalité restent vides</h3>
+          <p>Ce sont les deux chiffres que tout le monde cherche, et ce sont ceux qui bougent le plus : les textes ont déjà été modifiés et les seuils révisés. Un montant périmé affiché ici ferait engager une décision à plusieurs centaines de milliers de dollars sur une donnée fausse, sans que rien ne le signale.</p>
+        </div>
+      </div>
+    </div>
+    <p class="note">Vérifié le <span class="tbd">à renseigner</span> — tant que cette date est vide, aucun montant n'est publié sur cette page.</p>
+  </div>
+</section>
+
+<section class="dark" id="garanties">
+  <div class="wrap">
+    <div class="head"><div class="eyebrow">Notre méthode</div><h2>Les vérifications qui évitent les mauvaises surprises.</h2></div>
+    <div class="grid g3">
+      <div class="box"><h3>Régime du lieu confirmé avant tout le reste</h3><p>Sinaï ou continent, zone soumise à approbation ou non. Ce n'est pas la même opération juridique, et ça se tranche pour la parcelle précise, pas pour la région.</p></div>
+      <div class="box"><h3>Statut du titre établi, pas supposé</h3><p>L'acte est-il inscrit au registre, ou s'agit-il d'une chaîne de contrats jamais enregistrée ? On demande le numéro d'inscription et on le fait vérifier.</p></div>
+      <div class="box"><h3>Chaîne des propriétaires remontée</h3><p>Y compris les successions non partagées. Un bien vendu par un seul héritier d'une indivision est le litige le plus courant de ce marché.</p></div>
+      <div class="box"><h3>Fonds entrés en devises, au nom de l'acquéreur</h3><p>Avec l'attestation bancaire conservée en original. C'est elle qui ouvre les voies de séjour, justifie l'origine des fonds et permettra le rapatriement.</p></div>
+      <div class="box"><h3>Dans le neuf : ce que le promoteur a réellement livré</h3><p>Pas ce qu'il annonce. Autorisations de construire, programmes achevés, et surtout la clause qui s'applique si la livraison prend deux ans de retard.</p></div>
+      <div class="box"><h3>Contrat lu en arabe</h3><p>C'est la version arabe qui fait foi. Une traduction sert à comprendre, pas à se défendre : toute clause qui compte est vérifiée sur l'original, par quelqu'un qui le lit.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sand" id="faq">
+  <div class="wrap">
+    <div class="head"><div class="eyebrow">Questions fréquentes</div><h2>Égypte — les questions qui reviennent.</h2></div>
+    {faq(EG_FAQ)}
+    <p class="note">Les limites posées par la loi — nombre de biens, surface, délai avant revente libre — et les seuils ouvrant un titre de séjour ou la nationalité figurent au tableau ci-dessus, sans chiffre, avec l'autorité qui les publie. Ils y seront écrits le jour où ils auront été vérifiés à une date précise.</p>
+  </div>
+</section>
+
+{contact("Égypte — douze marchés", [n for n, _, _, _ in EG_VILLES] + ["Autre ville"])}
+'''
+
 if __name__ == "__main__":
     out = {
         "index.html": page(
@@ -938,6 +1156,12 @@ if __name__ == "__main__":
             "du sol, conditions d'éligibilité ville par ville, contrôle des changes à l'entrée comme "
             "à la sortie. Aucun taux ni seuil publié sans date de vérification.",
             cn_body, "cn"),
+        "egypte.html": page(
+            "Amarimmo Égypte — Acheter un bien au Caire, à Alexandrie, Hurghada et neuf autres marchés",
+            "Acquisition immobilière en Égypte pour acheteurs étrangers : contrat non enregistré "
+            "contre acte inscrit au registre, régime distinct du Sinaï, transfert des fonds en "
+            "devises. Aucun seuil ni taux publié sans date de vérification.",
+            eg_body, "eg"),
     }
     for name, content in out.items():
         p = os.path.join(HERE, name)
