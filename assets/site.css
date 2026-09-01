@@ -1,0 +1,330 @@
+/* Amarimmo — demo build
+   One stylesheet for both market pages. No framework, no external requests:
+   the site has to load fast on a phone on a 3G connection in Oran, which is
+   how most of this traffic will actually arrive. */
+
+:root{
+  --ink:#171512;
+  --ink-2:#4A443C;
+  --ink-3:#7C746A;
+  --line:#E3DDD3;
+  --paper:#FFFFFF;
+  --sand:#F7F3EC;
+  --sand-2:#EFE8DD;
+  --gold:#A9814B;
+  --gold-d:#8A6738;
+  --deep:#14181C;
+  --deep-2:#1D2429;
+  --ok:#3F7D5C;
+  --shadow:0 1px 2px rgba(23,21,18,.04), 0 8px 30px rgba(23,21,18,.07);
+  --shadow-l:0 2px 6px rgba(23,21,18,.06), 0 24px 70px rgba(23,21,18,.13);
+  --r:4px;
+  --maxw:1220px;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",Georgia,serif;
+  --sans:"Inter","Helvetica Neue",Helvetica,Arial,"Segoe UI",system-ui,sans-serif;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font:400 16.5px/1.68 var(--sans); -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+img,svg{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:400;letter-spacing:-.012em;margin:0}
+h1{font-size:clamp(2.4rem,5.2vw,4.15rem);line-height:1.04}
+h2{font-size:clamp(1.85rem,3.4vw,2.9rem);line-height:1.12}
+h3{font-size:1.28rem;line-height:1.3}
+p{margin:0}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 26px}
+.eyebrow{
+  font:600 11.5px/1 var(--sans); letter-spacing:.19em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:16px;
+}
+.lede{font-size:1.09rem;color:var(--ink-2);max-width:62ch}
+.muted{color:var(--ink-3)}
+section{padding:clamp(64px,8vw,116px) 0;scroll-margin-top:88px}  /* sticky header would otherwise cover the heading an anchor jumps to */
+.sand{background:var(--sand)}
+.rule{height:1px;background:var(--line);border:0;margin:0}
+
+/* ---------- demo banner ---------------------------------------------------- */
+.demo{
+  background:var(--deep); color:#EDE7DD; font:500 13px/1.5 var(--sans);
+  padding:11px 26px; display:flex; gap:14px; align-items:center; justify-content:center;
+  text-align:center; flex-wrap:wrap;
+}
+.demo b{color:#fff;font-weight:600}
+.demo button{
+  background:none;border:1px solid rgba(255,255,255,.34);color:#EDE7DD;
+  font:500 12px/1 var(--sans); padding:6px 11px; border-radius:var(--r); cursor:pointer;
+}
+.demo button:hover{background:rgba(255,255,255,.1)}
+
+/* ---------- header --------------------------------------------------------- */
+.hdr{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.93);
+     backdrop-filter:saturate(180%) blur(14px);border-bottom:1px solid var(--line)}
+.hdr .wrap{display:flex;align-items:center;gap:26px;height:76px}
+.brand{display:flex;align-items:center;gap:11px;margin-right:auto}
+.brand .mk{width:31px;height:31px;flex:0 0 31px}
+.brand .nm{font:700 19.5px/1 var(--sans);letter-spacing:.045em;text-transform:uppercase}
+.brand .nm em{font-style:normal;color:var(--gold)}
+.nav{display:flex;gap:26px}
+.nav a{font:500 14.2px/1 var(--sans);color:var(--ink-2);padding:6px 0;border-bottom:1.5px solid transparent}
+.nav a:hover{color:var(--ink);border-bottom-color:var(--gold)}
+.mkt{display:flex;flex:0 0 auto;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.mkt a{font:600 12.4px/1 var(--sans);letter-spacing:.07em;padding:9px 13px;color:var(--ink-3)}
+.mkt a[aria-current]{background:var(--ink);color:#fff}
+.burger{display:none;background:none;border:0;padding:8px;cursor:pointer}
+.burger span{display:block;width:22px;height:2px;background:var(--ink);margin:4px 0}
+
+/* ---------- buttons -------------------------------------------------------- */
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  font:600 14.2px/1 var(--sans);padding:15px 26px;border-radius:var(--r);
+  border:1px solid transparent;cursor:pointer;transition:.16s ease;
+}
+.btn-p{background:var(--gold);color:#fff}
+.btn-p:hover{background:var(--gold-d)}
+.btn-g{border-color:rgba(255,255,255,.42);color:#fff}
+.btn-g:hover{background:rgba(255,255,255,.12)}
+.btn-o{border-color:var(--line);color:var(--ink)}
+.btn-o:hover{border-color:var(--ink);background:var(--sand)}
+.btn .ar{transition:transform .16s ease}
+.btn:hover .ar{transform:translateX(3px)}
+
+/* ---------- hero ----------------------------------------------------------- */
+.hero{position:relative;min-height:min(78vh,700px);display:flex;align-items:flex-end;
+      overflow:hidden;background:var(--deep)}
+.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(10,12,14,.30) 0%,rgba(10,12,14,.12) 34%,rgba(10,12,14,.86) 100%)}
+.hero .wrap{position:relative;z-index:2;padding-top:120px;padding-bottom:64px;color:#fff}
+.hero h1{color:#fff;max-width:17ch}
+.hero .sub{margin-top:22px;max-width:58ch;color:rgba(255,255,255,.88);font-size:1.1rem}
+.hero .cta{display:flex;gap:13px;margin-top:34px;flex-wrap:wrap}
+.hero .eyebrow{color:#D8B57C}
+
+.strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--sand)}
+.strip .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
+.strip div{background:var(--sand);padding:26px 22px}
+.strip .k{font:600 11px/1 var(--sans);letter-spacing:.17em;text-transform:uppercase;color:var(--gold);margin-bottom:9px}
+.strip .v{font-family:var(--serif);font-size:1.16rem;line-height:1.3}
+
+/* ---------- generic layout helpers ---------------------------------------- */
+.head{max-width:58ch;margin-bottom:clamp(36px,4.5vw,58px)}
+.grid{display:grid;gap:26px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.split{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(34px,5vw,74px);align-items:center}
+
+/* ---------- project cards -------------------------------------------------- */
+.pc{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);
+    overflow:hidden;display:flex;flex-direction:column;transition:.18s ease}
+.pc:hover{box-shadow:var(--shadow-l);transform:translateY(-3px)}
+.pc .im{position:relative;aspect-ratio:3/2;overflow:hidden;background:var(--sand-2)}
+.pc .im img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.pc:hover .im img{transform:scale(1.045)}
+.pc .tag{position:absolute;top:13px;left:13px;background:rgba(255,255,255,.95);
+  font:600 10.5px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;
+  padding:7px 10px;border-radius:2px;color:var(--ink-2)}
+.pc .tag.demo-tag{background:rgba(20,24,28,.88);color:#E8DCC6}
+.pc .bd{padding:22px 22px 24px;display:flex;flex-direction:column;gap:12px;flex:1}
+.pc h3{font-size:1.32rem}
+.pc .loc{font:500 12.6px/1 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--gold)}
+.pc ul{list-style:none;margin:2px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:7px}
+.pc ul li{font:500 12.4px/1 var(--sans);color:var(--ink-2);
+  border:1px solid var(--line);border-radius:2px;padding:6px 9px;background:var(--sand)}
+.pc .ft{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;gap:12px}
+.pc .ft{flex-wrap:wrap}
+.pc .ft span{font:600 12.6px/1.35 var(--sans);color:var(--ink-3)}
+/* without nowrap the arrow drops onto its own line and the card footer looks broken */
+.pc .ft a{font:600 13px/1 var(--sans);color:var(--gold);white-space:nowrap}
+
+/* ---------- steps ---------------------------------------------------------- */
+.steps{counter-reset:s;display:grid;gap:0;border-top:1px solid var(--line)}
+.steps li{counter-increment:s;list-style:none;display:grid;
+  grid-template-columns:78px 1fr 1.25fr;gap:26px;align-items:start;
+  padding:28px 0;border-bottom:1px solid var(--line)}
+.steps li::before{content:"0" counter(s);font-family:var(--serif);font-size:1.6rem;color:var(--gold)}
+.steps h3{font-size:1.2rem;padding-top:4px}
+.steps p{color:var(--ink-2);font-size:.985rem}
+
+/* ---------- feature cards -------------------------------------------------- */
+.fc{border:1px solid var(--line);border-radius:var(--r);padding:28px 26px 30px;background:var(--paper)}
+.fc .ic{width:38px;height:38px;color:var(--gold);margin-bottom:18px}
+.fc h3{font-size:1.14rem;margin-bottom:10px}
+.fc p{color:var(--ink-2);font-size:.965rem}
+
+/* ---------- dark band ------------------------------------------------------ */
+.dark{background:var(--deep);color:#EFE9DF}
+.dark h2{color:#fff}
+.dark .lede,.dark p{color:rgba(239,233,223,.8)}
+.dark .eyebrow{color:#D8B57C}
+.dark .box{border:1px solid rgba(255,255,255,.14);border-radius:var(--r);padding:26px 24px}
+.dark .box h3{color:#fff;font-size:1.1rem;margin-bottom:9px}
+.dark .box p{font-size:.95rem}
+
+/* ---------- costs table ---------------------------------------------------- */
+.tbl{width:100%;border-collapse:collapse;font-size:.955rem}
+.tbl th,.tbl td{text-align:left;padding:15px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl th{font:600 11.4px/1.3 var(--sans);letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+.tbl td:first-child{font-weight:600}
+.tbl td:nth-child(2){white-space:nowrap;font-variant-numeric:tabular-nums}
+.tbl tr:last-child td{border-bottom:0}
+.note{font-size:.88rem;color:var(--ink-3);margin-top:16px;max-width:70ch}
+
+/* ---------- faq ------------------------------------------------------------ */
+.faq{border-top:1px solid var(--line)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{cursor:pointer;list-style:none;padding:22px 40px 22px 0;position:relative;
+  font-family:var(--serif);font-size:1.14rem}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:6px;top:19px;font:300 25px/1 var(--sans);color:var(--gold)}
+.faq details[open] summary::after{content:"\2013"}
+.faq .a{padding:0 40px 24px 0;color:var(--ink-2);font-size:.99rem}
+.faq .a p+p{margin-top:12px}
+
+/* ---------- contact -------------------------------------------------------- */
+.form{display:grid;gap:14px;grid-template-columns:1fr 1fr}
+.form .full{grid-column:1/-1}
+.form label{display:block;font:600 12px/1 var(--sans);letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ink-3);margin-bottom:8px}
+.form input,.form select,.form textarea{
+  width:100%;font:400 15.4px/1.5 var(--sans);color:var(--ink);
+  padding:13px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--paper)}
+.form textarea{min-height:118px;resize:vertical}
+.form input:focus,.form select:focus,.form textarea:focus{outline:2px solid var(--gold);outline-offset:-1px;border-color:var(--gold)}
+.consent{display:flex;gap:11px;align-items:flex-start;font-size:.86rem;color:var(--ink-3)}
+.consent input{width:auto;margin-top:3px}
+.formnote{font-size:.85rem;color:var(--ink-3)}
+
+/* ---------- footer --------------------------------------------------------- */
+.ft-main{background:var(--deep);color:#CFC7BA;padding:70px 0 0}
+.ft-main a{color:#CFC7BA}
+.ft-main a:hover{color:#fff}
+/* Cinq colonnes depuis l'ajout de la Chine : la marque, puis un bloc par
+   marche. Le contact a rejoint la colonne de marque — six colonnes de
+   36 px d'ecart sur 1200 px donnaient 160 px chacune, trop etroit pour
+   « Questions frequentes » sans cesure. */
+.ft-main .cols{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr 1fr;gap:32px;padding-bottom:52px}
+.ft-main h4{font:600 11.4px/1 var(--sans);letter-spacing:.17em;text-transform:uppercase;
+  color:#8C8377;margin-bottom:17px}
+.ft-main ul{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:.94rem}
+.ft-main .brand .nm{color:#fff}
+.ft-main .bl{font-size:.94rem;line-height:1.75;color:#9C948A;max-width:36ch;margin-top:16px}
+.ft-bot{border-top:1px solid rgba(255,255,255,.1);padding:22px 0;font-size:.85rem;color:#8C8377;
+  display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+
+/* ---------- responsive ----------------------------------------------------- */
+@media(max-width:1000px){
+  /* Le bouton menu descend a 1000 px : avec trois marches, la navigation
+     et le selecteur ne tiennent plus cote a cote. Mesure a 768 px, avant
+     correction : le selecteur se terminait a 887 px pour 768 disponibles,
+     et la page defilait lateralement. */
+  .hdr .wrap{gap:14px}
+  .nav{display:none}
+  .nav.open{display:flex;position:absolute;top:76px;left:0;right:0;background:#fff;
+    flex-direction:column;gap:0;padding:8px 26px 18px;border-bottom:1px solid var(--line)}
+  .nav.open a{padding:13px 0;border-bottom:1px solid var(--line)}
+  .burger{display:block;margin-left:auto}
+  .hdr .wrap{position:relative}
+  .mkt{flex:0 1 auto;min-width:0}
+  .g4{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(2,1fr)}
+  .split{grid-template-columns:1fr}
+  .strip .wrap{grid-template-columns:repeat(2,1fr)}
+  .ft-main .cols{grid-template-columns:1fr 1fr}
+}
+@media(max-width:760px){
+  /* the market switch was being squeezed against the burger and losing its second label */
+  .hdr .wrap{gap:12px}
+  .brand .nm{font-size:17px}
+  .mkt a{padding:9px 10px;font-size:11.6px}
+  .nav{display:none}
+  .nav.open{display:flex;position:absolute;top:76px;left:0;right:0;background:#fff;
+    flex-direction:column;gap:0;padding:8px 26px 18px;border-bottom:1px solid var(--line)}
+  .nav.open a{padding:13px 0;border-bottom:1px solid var(--line)}
+  .burger{display:block}
+  .hdr .wrap{position:relative}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .strip .wrap{grid-template-columns:1fr}
+  .steps li{grid-template-columns:52px 1fr;row-gap:8px}
+  .steps li p{grid-column:2}
+  .form{grid-template-columns:1fr}
+  .ft-main .cols{grid-template-columns:1fr}
+  .hero{min-height:auto}
+  .hero .wrap{padding-top:86px;padding-bottom:48px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
+/* ---- Valeur non encore verifiee ------------------------------------
+   Une case vide qui SE VOIT. Elle sert aux montants reglementaires de la
+   page Turquie : un seuil d'investissement perime reste affiche, a l'air
+   juste, et quelqu'un engage des centaines de milliers de dollars dessus.
+   Un tiret discret ferait exactement le meme degat qu'un chiffre faux ;
+   une pastille ambre, non. */
+.tbd{
+  display:inline-block; background:#FBEFD9; color:#8A6738;
+  border:1px solid #E0C79A; border-radius:5px;
+  padding:1px 8px; font:600 .82rem/1.5 var(--sans);
+  letter-spacing:.02em; white-space:nowrap;
+}
+/* ---- Valeur qui N'EXISTE PAS ---------------------------------------
+   Distincte de la precedente, et la distinction n'est pas cosmetique.
+   « a verifier » dit : la valeur existe, allez la chercher.
+   « non fixe »   dit : il n'y a rien a chercher. Le cout de renouvellement
+   du droit d'usage du sol en Chine est prevu par le Code civil mais n'a
+   jamais ete chiffre par un texte d'application. Le peindre en ambre
+   comme le reste enverrait quelqu'un perdre une semaine a chercher un
+   nombre qui n'a pas ete ecrit. */
+.tbd-x{
+  background:#EDEAE4; color:#5C564D; border-color:#D3CDC2;
+}
+.tbl td .muted{font-size:.85rem}
+
+/* Grille des douze marches : les cartes ne sont pas sur fond sombre ici,
+   contrairement a .dark .box, donc elles ont besoin de leur propre bordure. */
+section:not(.dark) .box{
+  border:1px solid var(--line); border-radius:var(--r);
+  padding:22px 20px; background:#fff;
+}
+section:not(.dark) .box h3{font-size:1.06rem; margin-bottom:4px}
+section:not(.dark) .box p{font-size:.94rem}
+
+/* ---- En-tete etroite : le troisieme marche ne rentrait plus ---------
+   Mesure a 390 px : marque + selecteur de marches (208 px avec trois
+   entrees) + bouton menu = 442 px pour 390 disponibles. La page defilait
+   donc lateralement, ce qui casse la lecture au telephone.
+   Deux corrections, pas une : le selecteur peut retrecir (flex-shrink) et
+   defiler dans son propre cadre, et l'en-tete ne pousse plus le bouton
+   menu hors de l'ecran. Verifie a 390 px sur les trois pages. */
+@media(max-width:520px){
+  /* Mesure a 390 px : marque 141 + selecteur 193 + bouton menu 38 + espaces
+     et marges = 416 px pour 390 disponibles. Avec trois marches, ca ne rentre
+     pas sur une ligne, et le raccourcir faisait disparaitre la fin du mot
+     « Turquie » derriere un bord — pire qu'un debordement, parce que ca
+     ressemble a une mise en page finie.
+     Le selecteur passe donc sur une deuxieme ligne, en pleine largeur, et
+     l'en-tete cesse d'etre collante a cette taille : deux lignes collees en
+     permanence mangeraient un sixieme de l'ecran d'un telephone. */
+  .hdr{position:static}
+  .hdr .wrap{flex-wrap:wrap; height:auto; gap:10px;
+             padding-top:12px; padding-bottom:12px}
+  .brand .nm{font-size:1.02rem}
+  .burger{margin-left:auto}
+  .mkt{order:3; flex:1 0 100%; justify-content:stretch}
+  .mkt a{flex:1 1 0; text-align:center; padding:10px 6px; font-size:11.5px;
+         white-space:nowrap}
+  .nav.open{top:auto}
+}
+
+/* Un tableau large defile DANS son cadre. C'est le corps de la page qui ne
+   doit jamais defiler lateralement : mesure avant correction, 405 px de
+   contenu pour 390 px d'ecran, sur la page Espagne comme sur la Turquie. */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
